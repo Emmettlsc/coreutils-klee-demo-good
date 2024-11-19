@@ -26,10 +26,11 @@ jobs:
 
     - name: Run KLEE Analysis
       run: |
+        mkdir -p ${{ github.workspace }}/klee-out
+        chmod 777 ${{ github.workspace }}/klee-out
         docker run --rm -v ${{ github.workspace }}:/workspace klee-coreutils /bin/bash -c "
           # Run KLEE on echo.bc
           klee --output-dir=/workspace/klee-out --libc=uclibc --posix-runtime /coreutils/obj-llvm/src/echo.bc --sym-arg 7
-
           # Generate stats
           klee-stats /workspace/klee-out > /workspace/klee-out/klee-stats.txt
         "
