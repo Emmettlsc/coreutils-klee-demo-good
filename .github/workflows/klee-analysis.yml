@@ -26,12 +26,14 @@ jobs:
 
     - name: Run KLEE Analysis
       run: |
-        # Clean up or ensure a fresh output directory
-        docker run --rm -v ${{ github.workspace }}:/workspace klee-coreutils /bin/bash -c "
-          rm -rf /workspace/klee-out && \
-          # Run KLEE on echo.bc
-          klee --output-dir=/workspace/klee-out --libc=uclibc --posix-runtime /coreutils/obj-llvm/src/echo.bc --sym-arg 7
-        "
+        # Run the container and execute KLEE
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          klee-coreutils /bin/bash -c "
+            mkdir -p /tmp/klee-out && \
+            klee --output-dir=/tmp/klee-out --libc=uclibc --posix-runtime /coreutils/obj-llvm/src/echo.bc --sym-arg 7 && \
+            cp -r /tmp/klee-out /workspace
+          "
 
     - name: Upload KLEE Output
       uses: actions/upload-artifact@v3
