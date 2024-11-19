@@ -24,17 +24,17 @@ jobs:
           --build-arg REPO_BRANCH=${{ github.ref_name }} \
           -t klee-coreutils .
 
-- name: Prepare workspace for KLEE output
-  run: |
-    mkdir -p ${{ github.workspace }}/klee-out-example1
-    chmod -R 777 ${{ github.workspace }}/klee-out-example1
+    - name: Prepare workspace for KLEE output
+      run: |
+        mkdir -p ${{ github.workspace }}/klee-out-example1
+        chmod -R 777 ${{ github.workspace }}/klee-out-example1
 
     - name: Run KLEE Analysis
       run: |
         docker run --rm -v ${{ github.workspace }}:/workspace klee-coreutils /bin/bash -c "
           mkdir -p /home/klee/tmp && \
           klee --output-dir=/home/klee/tmp/klee-out-example1 --libc=uclibc --posix-runtime /coreutils/obj-llvm/src/echo.bc --sym-arg 7 && \
-          cp -r /home/klee/tmp/klee-out-example1 /workspace
+          cp -r /home/klee/tmp/klee-out-example1 /workspace/klee-out-example1
         "
 
     - name: Upload KLEE Output
