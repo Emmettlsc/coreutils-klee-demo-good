@@ -24,6 +24,11 @@ jobs:
           --build-arg REPO_BRANCH=${{ github.ref_name }} \
           -t klee-coreutils .
 
+- name: Prepare workspace for KLEE output
+  run: |
+    mkdir -p ${{ github.workspace }}/klee-out-example1
+    chmod -R 777 ${{ github.workspace }}/klee-out-example1
+
     - name: Run KLEE Analysis
       run: |
         docker run --rm -v ${{ github.workspace }}:/workspace klee-coreutils /bin/bash -c "
